@@ -3,7 +3,7 @@ import requests
 import sys
 
 def print_help():
-    print("Usage  : {0} EVENT_CODE COMMENT_ID NUMBER_OF_LIKES".format(script_name))
+    print("Usage  : {0} EVENT_CODE QUESTION_ID NUMBER_OF_LIKES".format(script_name))
     print("Example: {0} 12345 18939973 3".format(script_name))
     quit()
 

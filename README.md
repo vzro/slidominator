@@ -2,7 +2,7 @@
 The sli.do Q&amp;A like automator for your question. Become the light of the party!
 
 ### Usage
-#### slidominator.py EVENT_CODE COMMENT_ID NUMBER_OF_LIKES
+#### slidominator.py EVENT_CODE QUESTION_ID NUMBER_OF_LIKES
 
 ### Example
 #### slidominator.py 12345 18939973 3
