@@ -32,6 +32,8 @@ def args_parser(args):
 
 def print_info(options):
     print()
+    print("Welcome to slidominator.")
+    print("Let's give that uninspired question a little push!\n")
     print('URL : {0}'.format(options['url']['app']))
     print('NAME: {0}'.format(options['name']))
     print('CODE: {0}'.format(options['code']))
@@ -41,20 +43,12 @@ def print_info(options):
 try:
     # name of the script
     script_name = sys.argv[0].split(sep='/')[-1]
-    
-    # quick start / debugging
-    # event code
-    sys.argv.insert(1, '66666')
-    # question id
-    sys.argv.insert(2, '18939973')
-    # like number
-    sys.argv.insert(3, 5)
 
     # parsing the command line arguments
-    args = args_parser({'event_code':sys.argv[1],'question_id':sys.argv[2],'like_number':sys.argv[3]})
+    args = args_parser({'event_code':sys.argv[1],'question_id':sys.argv[2],'like_number':int(sys.argv[3])})
     event_code  = args['event_code']
     question_id = args['question_id']
-    like_number = args['like_number']
+    like_number = int(args['like_number'])
 
     # extract data from the public API using only the user-friendly event code
     event_api_base_url = 'https://app.sli.do/api/v0.5/events'
@@ -105,8 +99,8 @@ try:
             likes += 1;
             print('\r{0} likes given out of {1}'.format(likes, like_number), end='')
 
-    print("\nDone! You're finally popular! :)")
-    print("Check the event page to see how many likes your question has now.")
+    print("\n\nDone! You're finally popular! :)")
+    print("Check the event page to see how many likes your question has now.\n")
 
 except IndexError:
     print_help()
