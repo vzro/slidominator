@@ -48,7 +48,7 @@ try:
     args = args_parser({'event_code':sys.argv[1],'question_id':sys.argv[2],'like_number':int(sys.argv[3])})
     event_code  = args['event_code']
     question_id = args['question_id']
-    like_number = int(args['like_number'])
+    like_number = args['like_number']
 
     # extract data from the public API using only the user-friendly event code
     event_api_base_url = 'https://app.sli.do/api/v0.5/events'
