@@ -1,6 +1,7 @@
 # slidominator - the sli.do like automator v3.0
 import requests
 import sys
+import random
 
 def print_help():
     print("Usage  : {0} EVENT_CODE QUESTION_ID NUMBER_OF_LIKES".format(script_name))
@@ -30,6 +31,17 @@ def args_parser(args):
     else:
         return args
 
+# 15-digit client id present in the header of the request
+def client_id_generator():
+    client_id = []
+    for x in range(15):
+        numbers     = client_id.append(chr(random.randint(48, 57)))
+        chars_upper = client_id.append(chr(random.randint(65, 90)))
+        chars_lower = client_id.append(chr(random.randint(97, 122)))
+    random.shuffle(client_id)
+    client_id = ''.join(client_id)[:15]
+    return client_id
+
 def print_info(options):
     print()
     print("Welcome to slidominator.")
@@ -57,15 +69,14 @@ try:
 
     # headers required by sli.do in order to compute the vote
     headers = {
-        # doesn't really matter what's used as long as it's not empty.
-        'X-Client-Id': 'FakeAssID',
+        # to avoid raising suspicions, let's use something similar to what they expect
+        'X-Client-Id': client_id_generator(),
         # same thing as above...
-        'X-Slidoapp-Version': 'Mr. Pickles',
+        'X-Slidoapp-Version': 'SlidoParticipantApp/6.23.0 (web)',
         # also required.
         'Authorization':''
     }
     # what actually likes / dislikes the question
-    # needs to be zero (0) in case disliking
     data = {
         "score":1
     }
