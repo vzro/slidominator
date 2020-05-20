@@ -4,27 +4,30 @@ import sys
 import random
 
 def print_help():
-    print("Usage  : {0} EVENT_CODE QUESTION_ID NUMBER_OF_LIKES".format(script_name))
-    print("Example: {0} 12345 18939973 3".format(script_name))
+    print("\nUsage  : {0} EVENT_CODE QUESTION_ID NUMBER_OF_LIKES".format(script_name))
+    print("Example: {0} 12345 18939973 3\n".format(script_name))
     quit()
 
 def args_parser(args):
-    if 'event_code' in args and len(args['event_code']) != 5:
-        print("The event code must be 5 digits long.")
-        raise IndexError
+    if 'event_code' in args and len(args['event_code']) not in range(3, 33):
+            print('\nEvent code must 3 to 32 digits long\n')
+            raise IndexError
     elif 'question_id' in args and len(args['question_id']) != 8:
-        print("The question id must be 8 digits long.")
+        print("\nThe question id must be 8 digits long.\n")
         raise IndexError
     elif 'like_number' in args and args['like_number'] <= 0:
-        print("The number of likes must be greater than 0.")
+        print("\nThe number of likes must be greater than 0.\n")
         raise IndexError
-    elif 'statusCode' in args and args['statusCode'] == 404:
-        print('The question was not found in this event:')
-        print()
+    elif 'statusCode' in args:
+        if args['statusCode'] == 404:
+            print('\nThe question was not found in this event:\n')
+        elif args['statusCode'] == 403:
+            print('\nAccess to this event has been limited with a captcha.')
+            print('Only humans (or Selenium, wink wink) can like questions now.')
+            print('...but fear not, we\'re working on it! :)\n')
         print('Status Code: {}'.format(args['statusCode']))
         print('Error  Code: {}'.format(args['error']))
-        print('    Message: {}'.format(args['message']))
-        print()
+        print('    Message: {}\n'.format(args['message']))
         raise KeyboardInterrupt
     elif 'event_question_id' in args:
         return args['event_question_user_score']
@@ -43,14 +46,10 @@ def client_id_generator():
     return client_id
 
 def print_info(options):
-    print()
-    print("Welcome to slidominator.")
+    print("\nWelcome to slidominator.")
     print("Let's give that uninspired question a little push!\n")
     print('URL : {0}'.format(options['url']['app']))
     print('NAME: {0}'.format(options['name']))
-    print('CODE: {0}'.format(options['code']))
-    print('HASH: {0}'.format(options['hash']))
-    print()
 
 try:
     # name of the script
@@ -64,8 +63,12 @@ try:
 
     # extract data from the public API using only the user-friendly event code
     event_api_base_url = 'https://app.sli.do/api/v0.5/events'
-    event_api_data     = requests.get('{0}?code={1}'.format(event_api_base_url, event_code)).json()[0]
-    event_uuid         = event_api_data['uuid']
+    try:
+        event_api_data     = requests.get('{0}?code={1}'.format(event_api_base_url, event_code)).json()[0]
+        event_uuid         = event_api_data['uuid']
+    except:
+        print("\nEvent not found.\n")
+        raise IndexError
 
     # headers required by sli.do in order to compute the vote
     headers = {
@@ -96,8 +99,12 @@ try:
     likes = 0
     for like in range(like_number):
 
-        # fetch the Bearer token
-        auth_token = requests.post(auth_url).json()['access_token']
+        # tries fetch the Bearer token
+        try:
+            auth_token = requests.post(auth_url).json()['access_token']
+        # if something bad happens, parse the response to know what's wrong
+        except:
+            args_parser(requests.post(auth_url).json())
 
         # updating header with token
         headers['Authorization'] = 'Bearer {0}'.format(auth_token)
@@ -116,4 +123,4 @@ try:
 except IndexError:
     print_help()
 except KeyboardInterrupt:
-    print("Quitting...")
+    print("Quitting...\n")
